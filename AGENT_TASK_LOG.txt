@@ -133,6 +133,16 @@ Prompt: Don't list the language options with an English subtitle. Only show Engl
 - `state.cursor` is the highlighted button. `paintCursor()` runs at the end of `render()`. Language buttons are `data-lang`, everything else navigable is `data-go`.
 - Common text goes through `esc()` and must keep building entities with `String.fromCharCode(38)`. A raw HTML entity in that function has broken the script before.
 
+### 2026-11-12 01:35 CST — Task received
+
+Prompt: Remove the circled sentence on the Languages screen ("Ghukliak shows these records in the stone script. Common shows them in English.").
+
+### 2026-11-12 01:36 CST — Task completed
+
+- That paragraph is gone. The Languages screen is only Return, the title, and the two choices.
+- Pushed straight to `main`.
+
+
 
 
 
