@@ -249,6 +249,17 @@ Prompt: Don't put the languages at the header.
 - Removed the running head. It was always "Ghukliak" on the left and the current language ("Common" or Ghukliak) on the right. Language is chosen on the Languages page only.
 - Pushed straight to `main`.
 
+### 2026-11-12 03:02 CST — Task received
+
+Prompt: Increase papyrus text from the smaller screenshot to the larger one, and make all papyrus text bold.
+
+### 2026-11-12 03:05 CST — Task completed
+
+- The larger shot's text block is about 1.21 times the smaller one, and it sits closer to the torn edge. The size cap went from 28px to 34px, and the sheet's inner margin was tightened so lines can grow to that size.
+- Common text is Calligraffitti at weight 700. Ghukliak strokes on the page were thickened to match. The keyboard carvings were left as they were.
+- Pushed straight to `main`.
+
+
 
 
 

@@ -79,11 +79,13 @@
     color: #3a1458;
     font-family: Calligraffitti, Palatino, "Palatino Linotype", Georgia, serif;
     font-size: 22px;
+    font-weight: 700;
+    font-synthesis: weight;
     background: url("papyrus.png") center / 100% 100% no-repeat;
     border: none;
     box-shadow: none;
     container-type: size;
-    padding: 13cqh 11cqw 12cqh 11cqw;
+    padding: 11cqh 8cqw 10cqh 8cqw;
     overflow: hidden;
   }
   .holo-glass.blank header,
@@ -134,7 +136,7 @@
   h2 {
     margin: 0 0 0.25em;
     font-size: 1.35em;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1.05;
     color: #2d0f48;
     text-shadow: none;
@@ -595,7 +597,7 @@ const DIGIT = {
 function digitSvg(ch) {
   const d = DIGIT[ch];
   if (!d) return "";
-  return '<svg class="rune holo" viewBox="0 0 40 48" aria-hidden="true"><path d="' + d + '" fill="none" stroke="#3a1458" stroke-width="2.2" stroke-linecap="square"/></svg>';
+  return '<svg class="rune holo" viewBox="0 0 40 48" aria-hidden="true"><path d="' + d + '" fill="none" stroke="#3a1458" stroke-width="3.4" stroke-linecap="square"/></svg>';
 }
 
 function dotSvg() {
@@ -634,7 +636,7 @@ function buildDefs() {
     const attrs = 'fill="none" stroke-linecap="square" stroke-linejoin="miter"';
     bits.push(
       '<symbol id="h-' + id + '" viewBox="0 0 40 48">' +
-        '<path d="' + d + '" ' + attrs + ' stroke="#3a1458" stroke-width="2.6"/>' +
+        '<path d="' + d + '" ' + attrs + ' stroke="#3a1458" stroke-width="3.6"/>' +
       "</symbol>"
     );
     bits.push(
@@ -730,7 +732,7 @@ function fitPage() {
     view.scrollHeight <= view.clientHeight + 1 &&
     view.scrollWidth <= view.clientWidth + 1;
   let lo = 8;
-  let hi = Math.min(28, Math.max(12, page.clientHeight / 14));
+  let hi = Math.min(34, Math.max(14, page.clientHeight / 11));
   let best = lo;
   for (let i = 0; i < 10; i++) {
     const mid = (lo + hi) / 2;
