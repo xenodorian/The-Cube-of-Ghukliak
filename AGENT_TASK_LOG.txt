@@ -1,0 +1,50 @@
+# Agent Task Log — The Cube of Ghukliak
+
+Repo: https://github.com/xenodorian/The-Cube-of-Ghukliak
+Default branch: main
+
+This file is the handoff between agents. Read it before starting work.
+Append an entry for every task. Do not delete earlier entries.
+
+## Standing rules for agents
+
+1. GitHub is connected as `xenodorian` (the repository owner). That account has edit permission. Do not fork the repo to do the work.
+2. When a prompt is successfully executed, upload the result directly to `main`.
+3. Do not create a new branch. Do not open a pull request for routine task uploads.
+4. Never work from a feature branch when uploading. Commit only on `main`.
+5. For every task, note in this file:
+   - when the task was given
+   - when the task was completed
+   - difficulties that would help later agents
+6. Prefer one commit on `main` that includes both the work and the updated log. If the work already landed, follow immediately with a log commit still on `main`.
+7. If `main` later becomes protected and a direct push fails, report that and stop. Do not quietly switch to a side branch unless the user changes this policy.
+
+## How to write
+
+Use the connected GitHub file tools with branch set to `main`.
+- New file: create-or-update, no blob SHA.
+- Existing file: fetch contents with ref `refs/heads/main`, then pass that blob SHA when updating.
+- Several files: push them together in one commit on `main`.
+
+The Grok app-builder sandbox (`/workspace`) is a separate environment. It is not a clone of this repository. Do not treat sandbox files as this project unless a task explicitly says to port them.
+
+---
+
+## Log
+
+### 2026-11-12 00:21 CST — Task received
+
+Prompt: Connect to https://github.com/xenodorian/The-Cube-of-Ghukliak with edit permissions. Whenever a prompt is successfully executed, upload the work directly to main without creating a new branch. Never work from a branch when uploading. Create a text file that notes when a new task is given, when it is completed, and any difficulties that would help other agents.
+
+### 2026-11-12 00:21 CST — Task completed
+
+- Confirmed GitHub auth as `xenodorian` (account id 76492590), owner of this repository. Write access is already in place. No collaborator invite was required.
+- Starting tree: only `README.md` (`# The-Cube-of-Ghukliak`). Only branch: `main` at `3b7e8a2e99f75f601447bd9772bb84f2e073664c`. Branch protection: off.
+- Added this file with a direct commit on `main`. No branch was created.
+
+### Difficulties / notes for other agents
+
+- None blocking. Auth and an unprotected `main` made a direct commit possible on the first try.
+- Do not clone into `/workspace` and treat that sandbox app as this repo. Writes for this project go through the GitHub connection onto `main`.
+- Updating an existing file requires its current blob SHA. Omitting the SHA on an update will fail.
+- `main` was unprotected on 2026-11-12. If protection is enabled later, direct commits will fail; do not work around that by opening a branch unless the user changes the rule.
