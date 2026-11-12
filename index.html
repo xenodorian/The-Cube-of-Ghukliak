@@ -263,6 +263,13 @@
     text-transform: uppercase;
     font-size: 13px;
   }
+  ul.roll { list-style: none; padding: 0; margin: 0 0 0.9em; }
+  ul.roll li {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(160, 220, 255, 0.22);
+    letter-spacing: 0.03em;
+    font-size: 14px;
+  }
   .back { margin-bottom: 10px; }
   .rune { display: inline-block; width: 0.98em; height: 1.22em; vertical-align: -0.22em; overflow: visible; margin: 0 0.04em; }
   .rune.stone { width: 22px; height: 26px; margin: 0; display: block; }
@@ -532,6 +539,42 @@ const PROFILES = [
       "Vafur Shadowcloak is intelligent and moral. Given full knowledge of the actual plan, they likely would have opposed the operation. As such, they must be kept in the dark as to the actual purpose of their mission.",
       "They were hired through secret back channels and led to believe this was a normal mission with a good purpose. In fact they are helping to prop up an enormous business by perpetuating the capture, enslavement, and murder of goblins and orcs."
     ]
+  },
+  {
+    id: "dreaming",
+    index: "05",
+    name: "The Dreaming Dark",
+    body: [
+      "An old pirate crew from Fallenskal, active in the 1100s. They were out to destroy passage to the afterlife, so they could not be sent to hell for their sins when they died. They disbanded after legendary heroes called The Servants of Frigg killed their captain. Now the ancestors of those original orcs are back at it again in force, and more fierce than ever before.",
+      "Now those old Dreaming Dark pirates have reincarnated, and are on an absolute tear. They rape, plunder, pillage, and burn, and are back on their bullshit trying to end the process of passing on to the next life. 700 years ago they went to Catan and destroyed Yggdrasil, an underground tree that tethers the Material Plane to the other planes. It has regrown since then, and they are back to destroy it.",
+      "Some of their members are Mako's old crewmates from The Golden Mantra. They also wiped out Fronx's druid tribe, The Circle of Jord. Send Mako and Fronx to Catan, to ensure we have dedicated warriors willing to fend them off. We can't afford any interruptions."
+    ],
+    members: ["Captain Hark", "Luberious", "Thrakka", "Heavy", "Stitches", "Shaman", "Dynamite"]
+  },
+  {
+    id: "sisters",
+    index: "06",
+    name: "The Sisters of Suffering",
+    body: [
+      "The Sisters of Suffering, also called the Witches of Misfortune, are female Barovian cultists of Basheba, the goddess of misfortune. They worship bad luck, doom, and general mischief. They exist as a counterbalance against good luck and prophecy, seeking to prevent mortals from using magic to alter their luck and fate.",
+      "They consider themselves mortals on a divine quest to punish the arrogant and greedy who seek to play God and alter reality for personal benefit. They oppose capitalism and modern business, as market forces disrupt the natural order of luck and fate.",
+      "They consider themselves hero-makers, out to push people to their breaking point to see which self-proclaimed heroes are actually heroes, and who is all hot air. They will leave people they deem to be genuinely good, selfless, and altruistic alone, as they have nothing to punish in a man who's done no wrong."
+    ],
+    members: [
+      "Sister Invasion. Punishes conquerors.",
+      "Sister Deceit. Punishes liars.",
+      "Sister Terror. Punishes those who instill fear in others.",
+      "Sister Vanity. Punishes the selfish."
+    ]
+  },
+  {
+    id: "sons",
+    index: "07",
+    name: "The Sons of Strahd",
+    body: [
+      "The Sons of Strahd are a band of vampire outlaws, here to commit acts of terrorism to kick out King Azoun's settlers, so they can remake Catan as New Barovia and resurrect Strahd on a new, secluded, defensible island. To fund their dark deeds they are in a secret contract with Flækingur Shadowcloak to capture goblins and orcs, infect them with star spawn larva to mind control them, ship them to Catan to mine ore, and dispose of any evidence."
+    ],
+    members: ["Whiskey", "Grog", "Rum", "Brandy", "Scotch"]
   }
 ];
 
@@ -577,7 +620,12 @@ const DIGIT = {
   "1": "M20,10 V38 M12,38 H28 M14,16 L20,10",
   "2": "M10,14 H30 L12,26 H30 L10,38 H30",
   "3": "M10,12 H30 V22 H16 M12,22 H30 V38 H10",
-  "4": "M28,10 V38 M10,10 V22 H30"
+  "4": "M28,10 V38 M10,10 V22 H30",
+  "5": "M30,12 H12 V24 H28 V36 H10",
+  "6": "M28,14 H14 V36 H28 V24 H16",
+  "7": "M10,12 H30 L14,38",
+  "8": "M12,12 H28 V24 H12 Z M12,24 H28 V36 H12 Z",
+  "9": "M12,12 H28 V24 H14 M28,12 V36 H12"
 };
 
 function digitSvg(ch) {
@@ -806,11 +854,16 @@ function renderProfiles() {
 
 function renderProfile() {
   const p = PROFILES.find((x) => x.id === state.who) || PROFILES[0];
+  const members = p.members
+    ? '<p class="kicker">' + inlineText("Members") + '</p><ul class="roll">' +
+      p.members.map((m) => "<li>" + inlineText(m) + "</li>").join("") + "</ul>"
+    : "";
   return (
     back("profiles", "All profiles") +
     '<p class="kicker">' + inlineText(p.index) + "</p>" +
     "<h2>" + inlineText(p.name) + "</h2>" +
-    paras(p.body)
+    paras(p.body) +
+    members
   );
 }
 

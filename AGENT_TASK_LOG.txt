@@ -152,6 +152,17 @@ Prompt: Rewrite the Vafur Shadowcloak profile. They are intelligent and moral, w
 - Corrected the prompt's typo "operaton" to "operation" in the player-facing text.
 - Pushed straight to `main`.
 
+### 2026-11-12 01:51 CST — Task received
+
+Prompt: Add three profiles. Ignore the image links and keep only the names. The Dreaming Dark (Fallenskal pirates, Yggdrasil, members Captain Hark, Luberious, Thrakka, Heavy, Stitches, Shaman, Dynamite). The Sisters of Suffering (Barovian cultists of Basheba; Sister Invasion, Deceit, Terror, Vanity, each with what they punish). The Sons of Strahd (vampire outlaws, New Barovia, contract with Flækingur; Whiskey, Grog, Rum, Brandy, Scotch).
+
+### 2026-11-12 01:55 CST — Task completed
+
+- Added profiles 05, 06, and 07 with a Members list under each. No image URLs were stored.
+- Added rune digits 5 through 9 so the new indexes and the years 700 and 1100s render.
+- Pushed straight to `main`.
+
+
 
 
 
