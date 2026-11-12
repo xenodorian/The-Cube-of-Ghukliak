@@ -180,6 +180,23 @@ Prompt: Update The Sons of Strahd. They were hired by Flækingur to capture, inf
 - Replaced the Sons of Strahd body with the hire, the betrayal, and the elimination order. Whiskey, Grog, Rum, Brandy, and Scotch were already listed and were left as names only.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:16 CST — Task received
+
+Prompt: The hologram looks too sci-fi. Make the Cube of Ghukliak's menus look more magical and fantastical.
+
+### 2026-11-12 02:20 CST — Task completed
+
+- Removed the scanlines, cyan glass, and terminal type. The conjured panel is now warm gold and night-brown, with a serif face, a gilt inner frame, drifting motes, and charm-like menu plates.
+- Hologram runes and the crystal shifted from electric blue to pale gold. The stone tablet is unchanged.
+- Layout still fits: the tablet bottom was inside an 800px-tall window.
+- Pushed straight to `main`.
+
+### Difficulties / notes for other agents
+
+- Rune color for the light is set in `buildDefs()` (`stroke="#fff4d4"` and the gold understroke). Digits and the punctuation dot are separate helpers. Changing only the CSS will not recolor the letters.
+- Do not put the scanline gradient back on `.scan`. That overlay is what made the panel read as a monitor.
+
+
 
 
 
