@@ -142,6 +142,17 @@ Prompt: Remove the circled sentence on the Languages screen ("Ghukliak shows the
 - That paragraph is gone. The Languages screen is only Return, the title, and the two choices.
 - Pushed straight to `main`.
 
+### 2026-11-12 01:39 CST — Task received
+
+Prompt: Rewrite the Vafur Shadowcloak profile. They are intelligent and moral, would likely have opposed the operation if they knew the plan, and must be kept in the dark. They were hired through secret back channels to believe it was a good mission, while actually supporting the capture, enslavement, and murder of goblins and orcs.
+
+### 2026-11-12 01:40 CST — Task completed
+
+- Replaced the first paragraph of the Vafur Shadowcloak profile. The second paragraph (secret back channels, the business, the enslavement) was already the requested wording and was left as written.
+- Corrected the prompt's typo "operaton" to "operation" in the player-facing text.
+- Pushed straight to `main`.
+
+
 
 
 
