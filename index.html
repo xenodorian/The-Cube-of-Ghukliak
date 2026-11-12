@@ -47,7 +47,7 @@
   .holo-wrap {
     flex: 1 1 auto;
     min-height: 0;
-    width: min(96vw, 900px, calc(46dvh * 1.81));
+    width: min(96vw, 980px);
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -66,6 +66,7 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+    container-type: size;
     perspective: 1600px;
   }
   .holo-glass {
@@ -84,7 +85,6 @@
     background: url("papyrus.png") center / 100% 100% no-repeat;
     border: none;
     box-shadow: none;
-    container-type: size;
     padding: 11cqh 8cqw 10cqh 8cqw;
     overflow: hidden;
   }
@@ -132,7 +132,7 @@
     overflow: hidden;
     clip: rect(0 0 0 0);
   }
-  h2, .prose p, .label { overflow-wrap: anywhere; }
+  h2, .prose p, .label, p.members { overflow-wrap: anywhere; }
   h2 {
     margin: 0 0 0.25em;
     font-size: 1.35em;
@@ -141,7 +141,7 @@
     color: #2d0f48;
     text-shadow: none;
   }
-  .prose p { margin: 0 0 0.35em; font-size: 1em; line-height: 1.15; color: #3a1458; }
+  .prose p, p.members { margin: 0 0 0.35em; font-size: 1em; line-height: 1.15; color: #3a1458; }
   .kicker {
     margin: 0 0 0.1em;
     font-size: 0.85em;
@@ -253,8 +253,8 @@
     position: relative;
     flex: 0 0 auto;
     align-self: center;
-    width: min(96vw, 900px, calc(46dvh * 1.81));
-    max-height: 46dvh;
+    width: min(96vw, 900px, calc(32dvh * 1.81));
+    max-height: 32dvh;
     aspect-ratio: 470 / 260;
     margin-top: 0;
     padding: 8% 13% 7%;
@@ -731,8 +731,8 @@ function fitPage() {
   const ok = () =>
     view.scrollHeight <= view.clientHeight + 1 &&
     view.scrollWidth <= view.clientWidth + 1;
-  let lo = 8;
-  let hi = Math.min(34, Math.max(14, page.clientHeight / 11));
+  let lo = 10;
+  let hi = Math.max(20, page.clientHeight / 4);
   let best = lo;
   for (let i = 0; i < 10; i++) {
     const mid = (lo + hi) / 2;
@@ -870,8 +870,7 @@ function renderProfiles() {
 function renderProfile() {
   const p = PROFILES.find((x) => x.id === state.who) || PROFILES[0];
   const members = p.members
-    ? '<p class="kicker">' + inlineText("Members") + '</p><ul class="roll">' +
-      p.members.map((m) => "<li>" + inlineText(m) + "</li>").join("") + "</ul>"
+    ? '<p class="members">' + inlineText("Members: " + p.members.map((m) => m.split(". ")[0]).join(", ")) + "</p>"
     : "";
   return (
     back("profiles", "All profiles") +
