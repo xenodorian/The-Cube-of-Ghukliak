@@ -119,7 +119,17 @@ Prompt: The Languages entry has no way to switch between Ghukliak and Common. Al
 
 ### Difficulties / notes for other agents
 
-- Do not remove the `.eng` labels on the language buttons. In Ghukliak mode the rest of the screen is runes, and without those two English words the switch cannot be found.
+- Do not put English under the language buttons. In Ghukliak mode both choices are runes only. English appears only after Common is selected, because `inlineText()` follows `state.lang`.
+
+### 2026-11-12 01:33 CST — Task received
+
+Prompt: Don't list the language options with an English subtitle. Only show English after the language setting is switched.
+
+### 2026-11-12 01:34 CST — Task completed
+
+- Removed the English names under the two language buttons. In Ghukliak they are runes only. Choosing Common rewrites the records, the menus, and those two buttons in English.
+- Pushed straight to `main`.
+
 - `state.cursor` is the highlighted button. `paintCursor()` runs at the end of `render()`. Language buttons are `data-lang`, everything else navigable is `data-go`.
 - Common text goes through `esc()` and must keep building entities with `String.fromCharCode(38)`. A raw HTML entity in that function has broken the script before.
 

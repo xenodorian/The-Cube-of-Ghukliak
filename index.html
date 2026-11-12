@@ -199,14 +199,6 @@
     box-shadow: inset 0 0 18px rgba(140, 220, 255, 0.22), 0 0 14px rgba(90, 190, 255, 0.4);
   }
   .ghost.pick { color: #fff; }
-  .eng {
-    display: block;
-    margin-top: 2px;
-    font-size: 14px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #f7feff;
-  }
   .idx {
     flex: 0 0 auto;
     font-size: 12px;
@@ -832,8 +824,8 @@ function renderLanguages() {
       "Ghukliak shows these records in the stone script. Common shows them in English."
     ]) +
     '<div class="stack">' +
-      '<button type="button" class="holo-btn' + gOn + '" data-lang="goblin"><span class="label"><span class="rune-line">' + inlineText("Ghukliak", "runes") + '</span><span class="eng">Ghukliak</span></span></button>' +
-      '<button type="button" class="holo-btn' + cOn + '" data-lang="common"><span class="label"><span class="rune-line">' + inlineText("Common", "runes") + '</span><span class="eng">Common</span></span></button>' +
+      '<button type="button" class="holo-btn' + gOn + '" data-lang="goblin"><span class="label">' + inlineText("Ghukliak") + '</span></button>' +
+      '<button type="button" class="holo-btn' + cOn + '" data-lang="common"><span class="label">' + inlineText("Common") + '</span></button>' +
     "</div>"
   );
 }
