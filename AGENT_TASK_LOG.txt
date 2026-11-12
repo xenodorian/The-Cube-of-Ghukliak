@@ -162,6 +162,16 @@ Prompt: Add three profiles. Ignore the image links and keep only the names. The 
 - Added rune digits 5 through 9 so the new indexes and the years 700 and 1100s render.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:02 CST — Task received
+
+Prompt: Update The Dreaming Dark. Same history, plus a mysterious gunslinger known only as "D" who hates them and has already killed members. Send all 3 (Mako, Fronx, and D) to Catan. Members unchanged. Ignore image links.
+
+### 2026-11-12 02:03 CST — Task completed
+
+- Rewrote the last paragraph of The Dreaming Dark. The member list was already the names only, so it was left as is.
+- Pushed straight to `main`.
+
+
 
 
 
