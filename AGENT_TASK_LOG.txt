@@ -90,4 +90,21 @@ Prompt: All text must be exclusively Ghukliak, with no English hints anywhere. T
 - A hidden capture field exists so a phone keyboard can open. It is invisible and cleared on input. Key handling lives on `window` `keydown` so a desktop keyboard works even when that field is focused.
 - `innerText` of a correct page is empty. Check rune `<use href="#h-…">` nodes and `.cell.lit`, not rendered English.
 
+### 2026-11-12 01:23 CST — Task received
+
+Prompt: The cube does not fit on screen. It is far too vertically formatted, with too much empty vertical space.
+
+### 2026-11-12 01:28 CST — Task completed
+
+- Stopped the hologram from stretching to the full window height. The password panel is only as tall as its contents.
+- The stone tablet stays inside the viewport (checked at 1280×720, 1440×810, and 1920×1080). Long records scroll inside the hologram instead of pushing the tablet off the bottom.
+- Removed the old rule that forced the page to at least 740px tall on short windows.
+- Pushed straight to `main`.
+
+### Difficulties / notes for other agents
+
+- Do not set `.holo { flex: 1 }` or `.stage { min-height: 100dvh }` without a max. That combination grew the empty hologram and hid the tablet under the taskbar.
+- Keep `.stage` at `height: 100dvh; overflow: hidden` and give `#view` a max-height so lore scrolls inside the light, not the page.
+
+
 

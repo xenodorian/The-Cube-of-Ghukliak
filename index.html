@@ -13,9 +13,9 @@
     --glow: rgba(90, 200, 255, 0.55);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
   body {
-    min-height: 100dvh;
+    height: 100dvh;
     color: var(--ink);
     background:
       radial-gradient(80% 50% at 50% 28%, rgba(36, 110, 170, 0.28), transparent 60%),
@@ -24,27 +24,39 @@
     font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", Menlo, Consolas, monospace;
   }
   .stage {
-    min-height: 100dvh;
+    height: 100dvh;
+    max-height: 100dvh;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    padding: 12px 12px calc(10px + env(safe-area-inset-bottom));
-    max-width: 820px;
+    padding: 8px 14px 8px;
+    width: min(980px, 100%);
     margin: 0 auto;
+    overflow: hidden;
   }
   .holo-wrap {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-height: 0;
+    max-height: calc(100dvh - 150px);
+    margin-top: auto;
     display: flex;
     flex-direction: column;
   }
   .holo {
-    flex: 1 1 auto;
-    min-height: 280px;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
     filter: drop-shadow(0 0 18px rgba(70, 180, 255, 0.35));
   }
+  .tablet { margin-bottom: auto; }
   .holo-glass {
     position: relative;
-    height: 100%;
+    height: auto;
+    max-height: 100%;
+    flex: 0 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     background:
@@ -106,7 +118,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px 8px;
+    padding: 6px 12px 4px;
     border-bottom: 1px solid var(--line);
     letter-spacing: 0.16em;
     font-size: 11px;
@@ -120,13 +132,14 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    padding: 14px 14px 16px;
+    max-height: calc(100dvh - 220px);
+    padding: 8px 12px 10px;
     -webkit-overflow-scrolling: touch;
   }
   #view.center {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
   }
   h1.visually-hidden {
     position: absolute;
@@ -246,23 +259,24 @@
   }
   .back { margin-bottom: 10px; }
   .rune { display: inline-block; width: 0.98em; height: 1.22em; vertical-align: -0.22em; overflow: visible; margin: 0 0.04em; }
-  .rune.stone { width: 30px; height: 36px; margin: 0; display: block; }
+  .rune.stone { width: 22px; height: 26px; margin: 0; display: block; }
   .gap { display: inline-block; width: 0.42em; }
   .mark { color: #b7efff; opacity: 0.85; }
   .beam {
-    height: 28px;
+    height: 14px;
     width: min(280px, 58%);
-    margin: -2px auto 0;
+    margin: 0 auto;
     background: linear-gradient(to bottom, rgba(130, 220, 255, 0.55), rgba(130, 220, 255, 0));
     filter: blur(5px);
     clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
     pointer-events: none;
+    flex: 0 0 auto;
   }
   .tablet {
     position: relative;
     flex: 0 0 auto;
-    margin-top: -8px;
-    padding: 18px 10px 10px;
+    margin-top: 0;
+    padding: 10px 8px 6px;
     background:
       radial-gradient(90% 80% at 15% 0%, rgba(255, 250, 240, 0.2), transparent 42%),
       radial-gradient(70% 80% at 100% 100%, rgba(0, 0, 0, 0.28), transparent 50%),
@@ -286,7 +300,7 @@
     z-index: 1;
     width: 18px;
     height: 24px;
-    margin: -28px auto 6px;
+    margin: -16px auto 2px;
     background: radial-gradient(circle at 40% 30%, #f7fdff, #5ad4ff 42%, #0a3a5c 74%);
     clip-path: polygon(50% 0, 100% 32%, 76% 100%, 24% 100%, 0 32%);
     box-shadow: 0 0 16px #49d4ff;
@@ -297,7 +311,7 @@
     display: flex;
     justify-content: center;
     gap: 3px;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     color: #2c261f;
   }
   .wordmark .rune.stone { width: 18px; height: 22px; }
@@ -306,7 +320,7 @@
     z-index: 1;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px 2px;
+    gap: 1px 0;
   }
   .cell {
     position: relative;
@@ -315,15 +329,16 @@
     align-items: center;
     justify-content: center;
     min-width: 0;
-    min-height: 40px;
+    min-height: 0;
+    padding: 1px 0;
   }
   .cell .rune.holo {
     display: none;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 30px;
-    height: 36px;
+    width: 22px;
+    height: 26px;
     margin: 0;
     transform: translate(-50%, -50%);
     filter: drop-shadow(0 0 4px #e9fdff) drop-shadow(0 0 10px #3ecfff);
@@ -392,13 +407,12 @@
     100% { opacity: 1; }
   }
   @media (max-height: 740px) {
-    .stage { min-height: 740px; }
-    .rune.stone, .cell .rune.holo { width: 22px; height: 26px; }
+    .rune.stone, .cell .rune.holo { width: 18px; height: 22px; }
+    .wordmark .rune.stone { width: 14px; height: 16px; }
   }
   @media (min-width: 800px) {
-    .stage { padding-top: 28px; padding-bottom: 28px; min-height: 100dvh; }
     .prose p { font-size: 15.5px; }
-    h2 { font-size: 20px; }
+    h2 { font-size: 18px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .scan, .sheen, .spike .holo-glass, .shake { animation: none; }
@@ -623,6 +637,7 @@ function setScreen(name) {
 }
 
 function render() {
+  document.body.classList.toggle("lock", state.screen === "lock");
   statusEl.innerHTML = inlineText("Ghukliak");
   pipEl.innerHTML = "";
   view.classList.toggle("center", state.screen === "lock");
