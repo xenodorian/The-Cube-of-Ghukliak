@@ -36,28 +36,29 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 8px 14px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 10px 12px;
     width: min(980px, 100%);
     margin: 0 auto;
     overflow: hidden;
   }
   .holo-wrap {
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 0;
-    max-height: 58dvh;
-    width: min(96%, 780px);
-    margin: 0 auto;
+    width: min(96vw, 900px, calc(46dvh * 1.81));
+    margin: 0;
     display: flex;
     flex-direction: column;
   }
   .holo {
     flex: 1 1 auto;
     min-height: 0;
-    max-height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    filter: drop-shadow(0 14px 16px rgba(40, 24, 10, 0.45));
+    filter: none;
   }
   .quire {
     position: relative;
@@ -69,19 +70,24 @@
   }
   .holo-glass {
     position: relative;
-    height: auto;
-    max-height: 100%;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     color: #3a1458;
     font-family: Calligraffitti, Palatino, "Palatino Linotype", Georgia, serif;
+    font-size: 22px;
     background: url("papyrus.png") center / 100% 100% no-repeat;
     border: none;
     box-shadow: none;
+    container-type: size;
+    padding: 13cqh 11cqw 12cqh 11cqw;
     overflow: hidden;
   }
+  .holo-glass.blank header,
+  .holo-glass.blank #view { visibility: hidden; }
   .turning {
     position: absolute;
     inset: 0;
@@ -110,9 +116,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    padding: 8px 16px 2px;
-    font-size: 20px;
+    gap: 0.4em;
+    padding: 0 0.2em 0.1em;
+    font-size: 0.8em;
     color: rgba(58, 20, 88, 0.7);
   }
   #pip { color: #3a1458; }
@@ -121,10 +127,8 @@
     z-index: 1;
     flex: 1 1 auto;
     min-height: 0;
-    overflow: auto;
-    max-height: none;
-    padding: 8px 12px 10px;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    padding: 0;
   }
   #view.center {
     display: flex;
@@ -137,21 +141,22 @@
     overflow: hidden;
     clip: rect(0 0 0 0);
   }
+  h2, .prose p, .label { overflow-wrap: anywhere; }
   h2 {
-    margin: 0 0 10px;
-    font-size: 32px;
+    margin: 0 0 0.25em;
+    font-size: 1.35em;
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.05;
     color: #2d0f48;
     text-shadow: none;
   }
-  .prose p { margin: 0 0 0.7em; font-size: 24px; line-height: 1.35; color: #3a1458; }
+  .prose p { margin: 0 0 0.35em; font-size: 1em; line-height: 1.15; color: #3a1458; }
   .kicker {
-    margin: 0 0 4px;
-    font-size: 20px;
+    margin: 0 0 0.1em;
+    font-size: 0.85em;
     color: rgba(58, 20, 88, 0.65);
   }
-  .stack { display: flex; flex-direction: column; gap: 8px; }
+  .stack { display: flex; flex-direction: column; gap: 0; }
   button, .holo-btn {
     font: inherit;
     color: inherit;
@@ -160,11 +165,11 @@
   .holo-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.3em;
     width: 100%;
     text-align: left;
-    min-height: 44px;
-    padding: 4px 6px;
+    min-height: 0;
+    padding: 0.08em 0.15em;
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(58, 20, 88, 0.22);
@@ -175,30 +180,30 @@
     background: rgba(58, 20, 88, 0.06);
     outline: none;
   }
-  .holo-btn .label { flex: 1; line-height: 1.15; font-size: 26px; }
-  .holo-btn.on { box-shadow: inset 3px 0 0 #3a1458; }
+  .holo-btn .label { flex: 1; min-width: 0; line-height: 1.05; font-size: 1.05em; overflow-wrap: anywhere; }
+  .holo-btn.on { box-shadow: none; }
   .holo-btn.pick, .ghost.pick {
-    background: rgba(58, 20, 88, 0.08);
-    box-shadow: inset 3px 0 0 #3a1458;
+    background: rgba(58, 20, 88, 0.1);
+    box-shadow: none;
   }
   .ghost.pick { color: #2d0f48; }
-  .idx { flex: 0 0 auto; font-size: 20px; color: #5a2478; }
-  .ico { width: 18px; height: 18px; flex: 0 0 auto; stroke: #3a1458; fill: none; stroke-width: 1.6; }
+  .idx { flex: 0 0 auto; font-size: 0.85em; color: #5a2478; }
+  .ico { width: 0.8em; height: 0.8em; flex: 0 0 auto; stroke: #3a1458; fill: none; stroke-width: 1.6; }
   .ghost {
-    margin-top: 8px;
+    margin-top: 0.2em;
     background: transparent;
     border: none;
     color: rgba(58, 20, 88, 0.7);
-    font-size: 22px;
-    padding: 4px 0;
-    min-height: 36px;
+    font-size: 0.95em;
+    padding: 0.05em 0;
+    min-height: 0;
   }
   .ghost:hover, .ghost:focus-visible { color: #2d0f48; outline: none; }
   label.ask {
     display: block;
     margin-bottom: 14px;
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 1.15em;
+    margin-bottom: 0.3em;
     color: #3a1458;
   }
   form.gate { display: flex; flex-direction: column; gap: 12px; }
@@ -231,23 +236,16 @@
     60% { transform: translateX(-2px); }
     80% { transform: translateX(2px); }
   }
-  ul.ore { list-style: none; padding: 0; margin: 0 0 0.9em; }
-  ul.ore li {
-    padding: 7px 0;
+  ul.ore, ul.roll { list-style: none; padding: 0; margin: 0 0 0.4em; }
+  ul.ore li, ul.roll li {
+    padding: 0.08em 0;
     border-bottom: 1px solid rgba(58, 20, 88, 0.2);
-    letter-spacing: 0.04em;
-    font-size: 22px;
-  }
-  ul.roll { list-style: none; padding: 0; margin: 0 0 0.9em; }
-  ul.roll li {
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(58, 20, 88, 0.2);
-    letter-spacing: 0.03em;
-    font-size: 22px;
+    letter-spacing: 0.02em;
+    font-size: 0.95em;
   }
   .back { margin-bottom: 10px; }
   .rune { display: inline-block; width: 0.98em; height: 1.22em; vertical-align: -0.22em; overflow: visible; margin: 0 0.04em; }
-  .rune.stone { width: 30px; height: 36px; margin: 0; display: block; }
+  .holo-glass .rune { width: 0.85em; height: 1.05em; vertical-align: -0.16em; }
   .gap { display: inline-block; width: 0.42em; }
   .mark { color: #b7efff; opacity: 0.85; }
   .beam {
@@ -264,11 +262,15 @@
     position: relative;
     flex: 0 0 auto;
     align-self: center;
-    width: min(96%, 780px);
-    max-height: 36dvh;
+    width: min(96vw, 900px, calc(46dvh * 1.81));
+    max-height: 46dvh;
     aspect-ratio: 470 / 260;
     margin-top: 0;
-    padding: 8% 18% 6%;
+    padding: 8% 13% 7%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    container-type: size;
     background: url("stone.png") center / 100% 100% no-repeat;
     border: none;
     box-shadow: none;
@@ -296,13 +298,17 @@
     margin-bottom: 2px;
     color: #2c261f;
   }
-  .wordmark .rune.stone { width: 18px; height: 22px; }
+  .wordmark .rune.stone { width: 6cqw; height: 7.2cqw; max-width: none; }
   .alpha {
     position: relative;
     z-index: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px 0;
+    grid-template-rows: repeat(4, 1fr);
+    align-items: center;
+    justify-items: center;
   }
   .cell {
     position: relative;
@@ -310,17 +316,25 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 0;
+    width: 100%;
+    height: 100%;
     min-height: 0;
-    padding: 1px 0;
+    padding: 0;
+  }
+  .rune.stone {
+    width: auto;
+    height: 86%;
+    max-width: 92%;
+    margin: 0;
+    display: block;
   }
   .cell .rune.holo {
     display: none;
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 30px;
-    height: 36px;
+    width: 86%;
+    height: 86%;
     margin: 0;
     transform: translate(-50%, -50%);
     filter: drop-shadow(0 0 4px #e9fdff) drop-shadow(0 0 10px #3ecfff);
@@ -333,7 +347,7 @@
   .cell.lit .rune.stone { opacity: 0.15; }
   .pw-wrap {
     position: relative;
-    min-height: 48px;
+    min-height: 1.3em;
     border-bottom: 1px solid rgba(58, 20, 88, 0.45);
     padding: 8px 2px;
   }
@@ -386,14 +400,6 @@
     50% { opacity: 1; }
     70% { opacity: 0.75; }
     100% { opacity: 1; }
-  }
-  @media (max-height: 740px) {
-    .rune.stone, .cell .rune.holo { width: 18px; height: 22px; }
-    .wordmark .rune.stone { width: 14px; height: 16px; }
-  }
-  @media (min-width: 800px) {
-    .prose p, .holo-btn .label { font-size: 22px; }
-    h2 { font-size: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .turning.go, .spike .holo-glass, .shake { animation: none; }
@@ -680,8 +686,8 @@ function turnThen(apply) {
   const ghost = document.createElement("div");
   ghost.className = "turning";
   ghost.setAttribute("aria-hidden", "true");
-  const stripped = page.innerHTML.replace(/\s(id|for)="[^"]*"/g, "");
-  ghost.innerHTML = '<div class="face front">' + stripped + '</div><div class="face back"></div>';
+  ghost.innerHTML = '<div class="face front"></div><div class="face back"></div>';
+  page.classList.add("blank");
   page.parentNode.appendChild(ghost);
   apply();
   void ghost.offsetWidth;
@@ -689,7 +695,9 @@ function turnThen(apply) {
   const done = () => {
     if (!ghost.isConnected) return;
     ghost.remove();
+    page.classList.remove("blank");
     turning = false;
+    fitPage();
   };
   ghost.addEventListener("animationend", done, { once: true });
   setTimeout(done, 800);
@@ -725,6 +733,31 @@ function render() {
     state.cursor = state.lang === "common" ? 2 : 1;
   }
   paintCursor();
+  fitPage();
+}
+
+function fitPage() {
+  const page = document.getElementById("page");
+  const header = document.querySelector("header.chrome");
+  if (!page || !view) return;
+  const ok = () =>
+    view.scrollHeight <= view.clientHeight + 1 &&
+    view.scrollWidth <= view.clientWidth + 1 &&
+    (!header || header.scrollWidth <= header.clientWidth + 1);
+  let lo = 8;
+  let hi = Math.min(28, Math.max(12, page.clientHeight / 14));
+  let best = lo;
+  for (let i = 0; i < 10; i++) {
+    const mid = (lo + hi) / 2;
+    page.style.fontSize = mid + "px";
+    if (ok()) {
+      best = mid;
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  page.style.fontSize = best + "px";
 }
 
 function navButtons() {
@@ -997,6 +1030,7 @@ view.addEventListener("click", (e) => {
 buildDefs();
 buildTablet();
 render();
+window.addEventListener("resize", fitPage);
 </script>
 </body>
 </html>

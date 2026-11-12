@@ -229,6 +229,18 @@ Prompt: Use the attached stone tablet image as the keyboard background and the a
 - Pages workflow now copies both png files into the site.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:51 CST — Task received
+
+Prompt: Papyrus text is clipped, keyboard letters are too small, text must stay inside the torn edges, and page turns should not show distorted text.
+
+### 2026-11-12 02:56 CST — Task completed
+
+- The turning page is blank papyrus. The new writing appears only after the leaf has finished turning, so the two pages no longer overlap.
+- Page padding is a share of the sheet itself (`cqh` / `cqw`), past the ragged edge. The fitter also refuses a size that overflows sideways. Checked ink samples against the paper's opaque pixels: none sat in the void.
+- Keyboard runes now fill their cells, and the stone is larger so the letters are bigger.
+- Pushed straight to `main`.
+
+
 
 
 
