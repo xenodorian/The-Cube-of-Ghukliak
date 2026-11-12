@@ -190,6 +190,24 @@ Prompt: The gold restyle was only a color change and the opposite of what was wa
 - Did not build a new look. Waiting on which structural direction to take. A palette swap will not fix this. The sci-fi read comes from the monitor frame: glass rectangle, corner brackets, status bar, scanlines, and stacked rectangular buttons.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:27 CST — Task received
+
+Prompt: Embed both the keyboard and the display onto a stone square. The display backdrop is a tattered papyrus tome. Text is dark purple Calligraffitti. The tome flips a page whenever a new page is accessed.
+
+### 2026-11-12 02:32 CST — Task completed
+
+- Replaced the hologram-above-a-tablet stack with one square stone. The torn papyrus sits in a recess on the upper face. The rune keyboard is carved into the lower face of the same stone.
+- Common text uses embedded Calligraffitti in `#3a1458`. Ghukliak stays rune ink in that same purple, so the cipher is unchanged. The font file is inside `index.html`, so the page does not need Google Fonts at the table.
+- `turnThen()` clones the current page and rotates it off the left edge before the new screen is shown. Language changes turn a page too. The first load does not. Reduced motion skips the turn.
+- Pushed straight to `main`.
+
+### Difficulties / notes for other agents
+
+- Do not put a glass rectangle, scanlines, or a status-bar chrome back over the page. The sci-fi read was the frame, not the color.
+- The page-turn ghost must strip `id` attributes. If it does not, `getElementById("view")` hits the ghost and the real page stops updating.
+- Calligraffitti is base64 in the `@font-face` rule near the top of the style block. Do not "clean up" that long line.
+
+
 
 
 
