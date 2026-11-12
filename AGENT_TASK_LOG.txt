@@ -218,6 +218,18 @@ Prompt: Forget the stone cube. Just replace the hologram with the papyrus tome. 
 - The tablet under the page is the old keyboard, untouched: same grid, same carved runes, same light on keypress.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:43 CST — Task received
+
+Prompt: Use the attached stone tablet image as the keyboard background and the attached papyrus image as the display background.
+
+### 2026-11-12 02:48 CST — Task completed
+
+- `stone.png` is the keyboard tablet. `papyrus.png` is the page. Both keep their transparent torn edges, so the CSS clip-path and the flat stone gradient are gone.
+- The alphabet sits in the blank center of the stone photo. The carved border on the picture is left alone. The crystal, grain, cracks, and moss overlays are hidden so they do not draw on top of the photo.
+- Pages workflow now copies both png files into the site.
+- Pushed straight to `main`.
+
+
 
 
 
