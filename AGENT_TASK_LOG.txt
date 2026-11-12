@@ -240,6 +240,16 @@ Prompt: Papyrus text is clipped, keyboard letters are too small, text must stay 
 - Keyboard runes now fill their cells, and the stone is larger so the letters are bigger.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:58 CST — Task received
+
+Prompt: Don't put the languages at the header.
+
+### 2026-11-12 02:59 CST — Task completed
+
+- Removed the running head. It was always "Ghukliak" on the left and the current language ("Common" or Ghukliak) on the right. Language is chosen on the Languages page only.
+- Pushed straight to `main`.
+
+
 
 
 
