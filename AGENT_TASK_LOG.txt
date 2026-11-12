@@ -207,6 +207,18 @@ Prompt: Embed both the keyboard and the display onto a stone square. The display
 - The page-turn ghost must strip `id` attributes. If it does not, `getElementById("view")` hits the ghost and the real page stops updating.
 - Calligraffitti is base64 in the `@font-face` rule near the top of the style block. Do not "clean up" that long line.
 
+### 2026-11-12 02:37 CST — Task received
+
+Prompt: Forget the stone cube. Just replace the hologram with the papyrus tome. The keyboard was made worse and should go back to what it was.
+
+### 2026-11-12 02:40 CST — Task completed
+
+- Restored `index.html` from `0308d3c`, the last commit whose keyboard was the original carved tablet.
+- Swapped only the hologram glass (scanlines, cyan frame, projector beam) for the torn papyrus page. Common text is dark purple Calligraffitti. Ghukliak on the page is the same purple, still in runes. Opening a new page turns the leaf.
+- The tablet under the page is the old keyboard, untouched: same grid, same carved runes, same light on keypress.
+- Pushed straight to `main`.
+
+
 
 
 
