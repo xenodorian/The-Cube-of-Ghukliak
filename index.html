@@ -193,6 +193,20 @@
     border-color: #e8fbff;
     box-shadow: inset 0 0 18px rgba(120, 210, 255, 0.2), 0 0 12px rgba(80, 190, 255, 0.25);
   }
+  .holo-btn.pick, .ghost.pick {
+    border-color: #f4fdff;
+    background: rgba(50, 130, 180, 0.28);
+    box-shadow: inset 0 0 18px rgba(140, 220, 255, 0.22), 0 0 14px rgba(90, 190, 255, 0.4);
+  }
+  .ghost.pick { color: #fff; }
+  .eng {
+    display: block;
+    margin-top: 2px;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f7feff;
+  }
   .idx {
     flex: 0 0 auto;
     font-size: 12px;
@@ -530,9 +544,11 @@ const PROFILES = [
 ];
 
 const state = {
+  lang: sessionStorage.getItem("ghuk-lang") || "goblin",
   open: sessionStorage.getItem("ghuk-open") === "1",
   screen: sessionStorage.getItem("ghuk-open") === "1" ? "menu" : "lock",
-  who: null
+  who: null,
+  cursor: 0
 };
 
 let buffer = "";
@@ -582,7 +598,20 @@ function dotSvg() {
   return '<svg class="rune holo" viewBox="0 0 40 48" aria-hidden="true"><path d="M17 22 H23 V28 H17 Z" fill="#d7f6ff"/></svg>';
 }
 
-function inlineText(str) {
+function esc(s) {
+  const amp = String.fromCharCode(38);
+  return String(s).replace(/[&<>"']/g, (c) => {
+    if (c === amp) return amp + "amp;";
+    if (c === "<") return amp + "lt;";
+    if (c === ">") return amp + "gt;";
+    if (c === '"') return amp + "quot;";
+    return amp + "#39;";
+  });
+}
+
+function inlineText(str, force) {
+  const asRunes = force === "runes" || (force !== "english" && state.lang !== "common");
+  if (!asRunes) return esc(str);
   let out = "";
   for (const ch of str) {
     if (ch === " ") { out += '<span class="gap"></span>'; continue; }
@@ -632,6 +661,7 @@ function flash() {
 
 function setScreen(name) {
   state.screen = name;
+  state.cursor = 0;
   flash();
   render();
 }
@@ -639,7 +669,7 @@ function setScreen(name) {
 function render() {
   document.body.classList.toggle("lock", state.screen === "lock");
   statusEl.innerHTML = inlineText("Ghukliak");
-  pipEl.innerHTML = "";
+  pipEl.innerHTML = state.lang === "common" ? esc("Common") : inlineText("Ghukliak", "runes");
   view.classList.toggle("center", state.screen === "lock");
   const parts = {
     lock: renderLock,
@@ -656,7 +686,31 @@ function render() {
     paintPw();
     const input = document.getElementById("pw");
     if (input) input.focus();
+  } else if (state.screen === "languages") {
+    state.cursor = state.lang === "common" ? 2 : 1;
   }
+  paintCursor();
+}
+
+function navButtons() {
+  return [...view.querySelectorAll("[data-go], [data-lang]")];
+}
+
+function paintCursor() {
+  const buttons = navButtons();
+  buttons.forEach((b) => b.classList.remove("pick"));
+  if (!buttons.length || state.screen === "lock") return;
+  if (state.cursor < 0) state.cursor = buttons.length - 1;
+  if (state.cursor >= buttons.length) state.cursor = 0;
+  const el = buttons[state.cursor];
+  el.classList.add("pick");
+  el.scrollIntoView({ block: "nearest" });
+}
+
+function goBack() {
+  if (state.screen === "profile") { setScreen("profiles"); return; }
+  if (state.screen === "menu" || state.screen === "lock") return;
+  setScreen("menu");
 }
 
 function renderLock() {
@@ -769,13 +823,18 @@ function renderProfile() {
 }
 
 function renderLanguages() {
+  const gOn = state.lang === "goblin" ? " on" : "";
+  const cOn = state.lang === "common" ? " on" : "";
   return (
     back("menu", "Return") +
     "<h2>" + inlineText("Languages") + "</h2>" +
     paras([
-      "The cube speaks Ghukliak and nothing else. No common letter is cut into the stone.",
-      "A key struck on another tongue lights the matching rune on the tablet. That same rune is set into the light above."
-    ])
+      "Ghukliak shows these records in the stone script. Common shows them in English."
+    ]) +
+    '<div class="stack">' +
+      '<button type="button" class="holo-btn' + gOn + '" data-lang="goblin"><span class="label"><span class="rune-line">' + inlineText("Ghukliak", "runes") + '</span><span class="eng">Ghukliak</span></span></button>' +
+      '<button type="button" class="holo-btn' + cOn + '" data-lang="common"><span class="label"><span class="rune-line">' + inlineText("Common", "runes") + '</span><span class="eng">Common</span></span></button>' +
+    "</div>"
   );
 }
 
@@ -800,30 +859,53 @@ function tryPassword(value) {
 }
 
 function takeKey(e) {
-  if (state.screen !== "lock") return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.key === "Enter") {
-    e.preventDefault();
-    tryPassword(buffer);
+  if (state.screen === "lock") {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      tryPassword(buffer);
+      return;
+    }
+    if (e.key === "Backspace" || e.key === "Delete") {
+      e.preventDefault();
+      buffer = buffer.slice(0, -1);
+      paintPw();
+      return;
+    }
+    if (e.key === " ") {
+      e.preventDefault();
+      buffer += " ";
+      paintPw();
+      return;
+    }
+    if (/^[a-zA-Z]$/.test(e.key)) {
+      e.preventDefault();
+      buffer += e.key.toLowerCase();
+      lightKey(e.key);
+      paintPw();
+    }
     return;
   }
-  if (e.key === "Backspace" || e.key === "Delete") {
+  const buttons = navButtons();
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
     e.preventDefault();
-    buffer = buffer.slice(0, -1);
-    paintPw();
+    if (buttons.length <= 1) {
+      view.scrollBy({ top: e.key === "ArrowDown" ? 72 : -72 });
+      return;
+    }
+    state.cursor += e.key === "ArrowDown" ? 1 : -1;
+    paintCursor();
     return;
   }
-  if (e.key === " ") {
+  if (e.key === "Enter" || e.key === "ArrowRight") {
     e.preventDefault();
-    buffer += " ";
-    paintPw();
+    const el = buttons[state.cursor];
+    if (el) el.click();
     return;
   }
-  if (/^[a-zA-Z]$/.test(e.key)) {
+  if (e.key === "ArrowLeft" || e.key === "Escape" || e.key === "Backspace") {
     e.preventDefault();
-    buffer += e.key.toLowerCase();
-    lightKey(e.key);
-    paintPw();
+    goBack();
   }
 }
 
@@ -849,6 +931,14 @@ view.addEventListener("input", (e) => {
 });
 
 view.addEventListener("click", (e) => {
+  const langBtn = e.target.closest("[data-lang]");
+  if (langBtn) {
+    state.lang = langBtn.dataset.lang;
+    sessionStorage.setItem("ghuk-lang", state.lang);
+    flash();
+    render();
+    return;
+  }
   const btn = e.target.closest("[data-go]");
   if (!btn) return;
   const go = btn.dataset.go;

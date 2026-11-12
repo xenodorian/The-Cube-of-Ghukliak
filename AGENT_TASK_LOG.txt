@@ -106,5 +106,23 @@ Prompt: The cube does not fit on screen. It is far too vertically formatted, wit
 - Do not set `.holo { flex: 1 }` or `.stage { min-height: 100dvh }` without a max. That combination grew the empty hologram and hid the tablet under the taskbar.
 - Keep `.stage` at `height: 100dvh; overflow: hidden` and give `#view` a max-height so lore scrolls inside the light, not the page.
 
+### 2026-11-12 01:30 CST — Task received
+
+Prompt: The Languages entry has no way to switch between Ghukliak and Common. Also allow menu navigation with the arrow keys.
+
+### 2026-11-12 01:35 CST — Task completed
+
+- Languages now has two choices. Each shows its rune and the English name, so the switch is visible even while the rest of the cube is in Ghukliak. Common turns every record into English. Ghukliak turns them back into runes. The choice is remembered for the browser session.
+- Arrow up and down move through menu buttons. Enter or right arrow opens the highlighted one. Left arrow, Escape, or Backspace goes back. On a page that is only text, up and down scroll it.
+- The stone tablet still has no English letters. The password line is still runes only.
+- Pushed straight to `main`.
+
+### Difficulties / notes for other agents
+
+- Do not remove the `.eng` labels on the language buttons. In Ghukliak mode the rest of the screen is runes, and without those two English words the switch cannot be found.
+- `state.cursor` is the highlighted button. `paintCursor()` runs at the end of `render()`. Language buttons are `data-lang`, everything else navigable is `data-go`.
+- Common text goes through `esc()` and must keep building entities with `String.fromCharCode(38)`. A raw HTML entity in that function has broken the script before.
+
+
 
 
