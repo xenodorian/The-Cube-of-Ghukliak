@@ -18,6 +18,7 @@ Append an entry for every task. Do not delete earlier entries.
    - difficulties that would help later agents
 6. Prefer one commit on `main` that includes both the work and the updated log. If the work already landed, follow immediately with a log commit still on `main`.
 7. If `main` later becomes protected and a direct push fails, report that and stop. Do not quietly switch to a side branch unless the user changes this policy.
+8. The cube itself is `index.html` at the repository root. GitHub Pages is set to `build_type: workflow`. `.github/workflows/pages.yml` publishes that file to https://xenodorian.github.io/The-Cube-of-Ghukliak/ on every push to `main`. Do not delete the workflow. Do not write the password into the README or this log.
 
 ## How to write
 
@@ -48,3 +49,25 @@ Prompt: Connect to https://github.com/xenodorian/The-Cube-of-Ghukliak with edit 
 - Do not clone into `/workspace` and treat that sandbox app as this repo. Writes for this project go through the GitHub connection onto `main`.
 - Updating an existing file requires its current blob SHA. Omitting the SHA on an update will fail.
 - `main` was unprotected on 2026-11-12. If protection is enabled later, direct commits will fail; do not work around that by opening a branch unless the user changes the rule.
+
+### 2026-11-12 00:57 CST — Task received
+
+Prompt: Build The Cube of Ghukliak as an HTML file and publish it to GitHub Pages after each update. In the browser it shows a rectangular stone tablet carved with the goblin alphabet, and a magical blue hologram computer above it. First screen asks for a password. After the password: Orders from The Star Spawn, Metal Deposit, Profiles (Abraham Thorn, Bram Thorn, Flækingur Shadowcloak, Vafur Shadowcloak), and Languages. Languages switches the records between Ghukliak and Common. Common is the English setting that lets the table read everything. Lore to include, in full: the Star Spawn Larva Mage crash in Cormyr after a mind flayer attack; metals needed (steel, gold, platinum, adamantine, mithral); larvae seeded in Catan to make goblins and orcs obedient or insane if they resist; mining to the death and delivery to the southwest stone port; the four profiles as specified (Abraham's secret commission through the Lumberville Adventuring Guild, Bram's untreated cardiomegaly and brain tumor, Flækingur's triple life, Vafur kept ignorant of the real plan).
+
+### 2026-11-12 01:10 CST — Task completed
+
+- Added `index.html` on `main`. Password gate, four record sections, and a Ghukliak/Common switch. Default tongue after the gate is Ghukliak. The password screen itself stays in Common so the ask is plain.
+- The tablet shows an original straight-cut stone script, one rune per Common letter A–Z plus Æ, with the Common letter carved under each rune.
+- Ghukliak mode draws the hologram text in those runes. Common mode shows the same records in English.
+- Added `.github/workflows/pages.yml` so a push to `main` deploys GitHub Pages. The Pages URL already existed but 404ed because Pages was `build_type: workflow` and the repo had zero workflows.
+
+### Difficulties / notes for other agents
+
+- Canon: Ghukliak was written in Dethek, and later some goblinoids used Thorass. The books' rune charts are not reproduced here. The tablet is an original cipher with the key carved on it, so the table can translate without a conlang dictionary. Keep the hologram glyphs and the tablet glyphs in the same `RUNE` map.
+- The password is checked in the browser. It is stored rot13, not as plaintext. Do not "helpfully" write it into the README or this log. A wrong or empty word must not reveal it.
+- Profiles use they/them, matching the brief. Abraham is still "father" and Bram is still their son. Do not soften or omit the commission, the larvae, the enslavement, or the medical clock on Bram. This is the villains' own record.
+- Place name is Catan, not Cormyr, for the seeding, the mines, and the conquest. The crash site is the Kingdom of Cormyr. Mithral is spelled mithral.
+- An HTML entity written as a JS string got decoded on the way into the file once and broke `esc()` with "Unexpected string". Build entities with `String.fromCharCode(38)` if you touch that helper.
+- Pages will not update if `pages.yml` is removed while `build_type` stays `workflow`. Confirm the Actions run is green after a push. The public URL is https://xenodorian.github.io/The-Cube-of-Ghukliak/
+- `sessionStorage` keeps the cube unsealed and remembers the language for the browser session. "Seal the cube" locks it again.
+

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<title>The Cube of Ghukliak</title>
+<style>
+  :root {
+    --ink: #e9fbff;
+    --dim: rgba(198, 236, 248, 0.72);
+    --line: rgba(150, 224, 255, 0.45);
+    --glow: rgba(90, 200, 255, 0.55);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    min-height: 100dvh;
+    color: var(--ink);
+    background:
+      radial-gradient(80% 50% at 50% 28%, rgba(36, 110, 170, 0.28), transparent 60%),
+      radial-gradient(40% 30% at 50% 78%, rgba(20, 40, 50, 0.5), transparent 70%),
+      #07090c;
+    font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", Menlo, Consolas, monospace;
+  }
+  .stage {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 12px calc(10px + env(safe-area-inset-bottom));
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .holo-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .holo {
+    flex: 1 1 auto;
+    min-height: 280px;
+    filter: drop-shadow(0 0 18px rgba(70, 180, 255, 0.35));
+  }
+  .holo-glass {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background:
+      linear-gradient(180deg, rgba(186, 236, 255, 0.22), rgba(30, 100, 160, 0.1) 32%, rgba(6, 24, 44, 0.45));
+    border: 1px solid rgba(198, 244, 255, 0.7);
+    box-shadow:
+      inset 0 0 48px rgba(80, 190, 255, 0.2),
+      inset 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 24px rgba(60, 170, 255, 0.18);
+    overflow: hidden;
+  }
+  .holo-glass::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    background:
+      linear-gradient(#c9f6ff, #c9f6ff) left top / 16px 1px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) left top / 1px 16px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) right top / 16px 1px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) right top / 1px 16px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) left bottom / 16px 1px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) left bottom / 1px 16px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) right bottom / 16px 1px no-repeat,
+      linear-gradient(#c9f6ff, #c9f6ff) right bottom / 1px 16px no-repeat;
+    opacity: 0.7;
+  }
+  .scan {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 10, 20, 0.18) 0 1px,
+      transparent 1px 4px
+    );
+    mix-blend-mode: multiply;
+    animation: scan 9s linear infinite;
+  }
+  .sheen {
+    pointer-events: none;
+    position: absolute;
+    inset: -20% 0 auto;
+    height: 35%;
+    background: linear-gradient(to bottom, transparent, rgba(210, 250, 255, 0.14), transparent);
+    animation: sheen 7.5s ease-in-out infinite;
+  }
+  @keyframes scan { to { transform: translateY(8px); } }
+  @keyframes sheen {
+    0% { transform: translateY(-30%); opacity: 0; }
+    15% { opacity: 1; }
+    55% { opacity: 0.4; }
+    100% { transform: translateY(320%); opacity: 0; }
+  }
+  header.chrome {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: 0.16em;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  #pip { letter-spacing: 0.18em; color: #f4fdff; text-shadow: 0 0 8px var(--glow); }
+  #view {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 14px 14px 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  #view.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  h1.visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  h2 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 560;
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    color: #f5feff;
+    text-shadow: 0 0 12px rgba(120, 220, 255, 0.45);
+  }
+  .prose p { margin: 0 0 0.9em; font-size: 15px; line-height: 1.85; color: var(--ink); }
+  .kicker {
+    margin: 0 0 8px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .stack { display: flex; flex-direction: column; gap: 8px; }
+  button, .holo-btn {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .holo-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    min-height: 48px;
+    padding: 10px 12px;
+    background: rgba(8, 30, 48, 0.28);
+    border: 1px solid rgba(170, 230, 255, 0.38);
+    color: var(--ink);
+    box-shadow: inset 0 0 16px rgba(80, 180, 255, 0.06);
+  }
+  .holo-btn:hover, .holo-btn:focus-visible {
+    border-color: rgba(220, 250, 255, 0.85);
+    background: rgba(40, 110, 160, 0.22);
+    outline: none;
+  }
+  .holo-btn .label { flex: 1; line-height: 1.35; }
+  .holo-btn.on {
+    border-color: #e8fbff;
+    box-shadow: inset 0 0 18px rgba(120, 210, 255, 0.2), 0 0 12px rgba(80, 190, 255, 0.25);
+  }
+  .idx {
+    flex: 0 0 auto;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: #9fe8ff;
+  }
+  .ico { width: 22px; height: 22px; flex: 0 0 auto; stroke: #dff8ff; fill: none; stroke-width: 1.5; }
+  .ghost {
+    margin-top: 12px;
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 8px 0;
+    min-height: 40px;
+  }
+  .ghost:hover, .ghost:focus-visible { color: #fff; outline: none; }
+  label.ask {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 15px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  form.gate { display: flex; flex-direction: column; gap: 12px; }
+  input[name="pw"] {
+    width: 100%;
+    background: rgba(0, 16, 32, 0.35);
+    border: none;
+    border-bottom: 1px solid rgba(180, 240, 255, 0.75);
+    color: #f4fdff;
+    font: inherit;
+    font-size: 18px;
+    padding: 12px 4px;
+    outline: none;
+    caret-color: #bff6ff;
+    border-radius: 0;
+  }
+  input[name="pw"]:focus { box-shadow: 0 8px 16px -12px rgba(140, 230, 255, 0.9); }
+  .err {
+    min-height: 1.2em;
+    margin: 0;
+    color: #ffb4b0;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 8px rgba(255, 80, 70, 0.45);
+  }
+  .shake { animation: shake 0.35s linear; }
+  @keyframes shake {
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+  }
+  ul.ore { list-style: none; padding: 0; margin: 0 0 0.9em; }
+  ul.ore li {
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(160, 220, 255, 0.22);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  .back { margin-bottom: 10px; }
+  .rune { display: inline-block; width: 0.98em; height: 1.22em; vertical-align: -0.22em; overflow: visible; margin: 0 0.04em; }
+  .rune.stone { width: 30px; height: 36px; margin: 0; display: block; }
+  .gap { display: inline-block; width: 0.42em; }
+  .mark { color: #b7efff; opacity: 0.85; }
+  .beam {
+    height: 28px;
+    width: min(280px, 58%);
+    margin: -2px auto 0;
+    background: linear-gradient(to bottom, rgba(130, 220, 255, 0.55), rgba(130, 220, 255, 0));
+    filter: blur(5px);
+    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+    pointer-events: none;
+  }
+  .tablet {
+    position: relative;
+    flex: 0 0 auto;
+    margin-top: -8px;
+    padding: 18px 10px 10px;
+    background:
+      radial-gradient(90% 80% at 15% 0%, rgba(255, 250, 240, 0.2), transparent 42%),
+      radial-gradient(70% 80% at 100% 100%, rgba(0, 0, 0, 0.28), transparent 50%),
+      linear-gradient(160deg, #8a847a 0%, #6a655c 28%, #514e47 62%, #3a3833 100%);
+    border: 1px solid #161310;
+    box-shadow:
+      0 16px 28px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -14px 22px rgba(0, 0, 0, 0.38);
+  }
+  .tablet .grain {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+  }
+  .crystal {
+    position: relative;
+    z-index: 1;
+    width: 18px;
+    height: 24px;
+    margin: -28px auto 6px;
+    background: radial-gradient(circle at 40% 30%, #f7fdff, #5ad4ff 42%, #0a3a5c 74%);
+    clip-path: polygon(50% 0, 100% 32%, 76% 100%, 24% 100%, 0 32%);
+    box-shadow: 0 0 16px #49d4ff;
+  }
+  .wordmark {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 8px;
+    color: #2c261f;
+  }
+  .wordmark .rune.stone { width: 18px; height: 22px; }
+  .alpha {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px 2px;
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-width: 0;
+  }
+  .lat {
+    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: #241e18;
+    text-shadow: 0 1px 0 rgba(255, 244, 220, 0.35);
+  }
+  .crack, .moss { position: absolute; pointer-events: none; }
+  .crack { background: rgba(10, 8, 6, 0.55); }
+  .c1 { left: 8%; top: 22%; width: 28%; height: 1px; transform: rotate(8deg); }
+  .c2 { right: 6%; bottom: 18%; width: 22%; height: 1px; transform: rotate(-16deg); }
+  .c3 { left: 18%; bottom: 8%; width: 1px; height: 18%; transform: rotate(6deg); }
+  .moss {
+    width: 34px; height: 14px; border-radius: 40%;
+    background: rgba(58, 84, 62, 0.35);
+    filter: blur(0.5px);
+  }
+  .m1 { left: 6%; bottom: 10%; }
+  .m2 { right: 10%; top: 30%; }
+  .spike .holo-glass { animation: spike 220ms linear; }
+  @keyframes spike {
+    0% { opacity: 1; }
+    35% { opacity: 0.45; }
+    50% { opacity: 1; }
+    70% { opacity: 0.75; }
+    100% { opacity: 1; }
+  }
+  @media (max-height: 740px) {
+    .stage { min-height: 740px; }
+    .rune.stone { width: 22px; height: 26px; }
+  }
+  @media (min-width: 800px) {
+    .stage { padding-top: 28px; padding-bottom: 28px; min-height: 100dvh; }
+    .prose p { font-size: 15.5px; }
+    h2 { font-size: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scan, .sheen, .spike .holo-glass, .shake { animation: none; }
+  }
+</style>
+</head>
+<body>
+<h1 class="visually-hidden">The Cube of Ghukliak</h1>
+<div class="stage">
+  <div class="holo-wrap">
+    <div class="holo" id="holo">
+      <div class="holo-glass">
+        <header class="chrome">
+          <span id="status">Awaiting word</span>
+          <span id="pip"></span>
+        </header>
+        <div id="view"></div>
+        <div class="scan" aria-hidden="true"></div>
+        <div class="sheen" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+  <div class="beam" aria-hidden="true"></div>
+  <section class="tablet" aria-label="Goblin alphabet">
+    <div class="grain" aria-hidden="true"></div>
+    <div class="crystal" aria-hidden="true"></div>
+    <div class="wordmark" id="wordmark" aria-hidden="true"></div>
+    <div class="alpha" id="alpha"></div>
+    <div class="crack c1"></div>
+    <div class="crack c2"></div>
+    <div class="crack c3"></div>
+    <div class="moss m1"></div>
+    <div class="moss m2"></div>
+  </section>
+</div>
+<svg id="defs" width="0" height="0" style="position:absolute" aria-hidden="true"></svg>
+<noscript><p style="color:#dff6ff;padding:16px">The cube's light needs a browser that can run its working.</p></noscript>
+<script>
+const RUNE = {
+  a: "M8,40 L20,10 L20,40 M20,10 L33,26",
+  b: "M9,8 H31 V24 L9,40 M31,24 V40",
+  c: "M32,9 L8,9 L8,40 L24,27 L33,40",
+  d: "M8,24 H32 M20,8 V40 M8,8 L32,40",
+  e: "M8,9 H31 M8,9 L8,39 H31 M8,24 H32",
+  f: "M9,8 V40 M9,8 L32,24 L9,40",
+  g: "M30,11 H12 V39 H32 V25 H18 M8,11 H20",
+  h: "M9,8 V40 M9,8 L31,40 M31,8 V40",
+  i: "M20,8 V40 M8,16 H32 M8,32 H32",
+  j: "M8,9 L32,9 L32,28 L16,41 L8,28",
+  k: "M8,8 V40 H32 L8,24 M32,8 V18",
+  l: "M8,8 H24 L33,24 L16,40 H8",
+  m: "M8,40 V14 L20,30 L32,14 V40 M8,14 H32",
+  n: "M8,8 L20,40 L32,8 M20,8 V40",
+  o: "M8,16 H32 V32 H8 Z M15,16 V32 M25,16 V32",
+  p: "M8,40 L24,8 H33 V40 H16",
+  q: "M8,12 H20 V36 H32 V12 M8,24 H32",
+  r: "M10,8 V40 M10,8 L32,20 L10,32 L32,40",
+  s: "M29,9 H8 L32,24 L8,40 H29",
+  t: "M8,14 H32 M14,8 L26,40 M26,8 L14,40",
+  u: "M8,8 V24 L20,40 L32,24 V8 M20,8 V22",
+  v: "M6,28 H34 M20,8 V40 M8,8 L32,28",
+  w: "M8,8 L16,40 L24,8 L32,40 M8,24 H32",
+  x: "M8,8 H24 V24 H8 V40 H32 V24",
+  y: "M8,8 L32,40 M32,8 L8,40 M8,24 H32",
+  z: "M8,8 L32,8 L8,24 L32,24 L8,40 L32,40",
+  "æ": "M8,40 L16,8 H32 M16,24 H32 M8,40 H24"
+};
+
+const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Æ"];
+
+const ICO = {
+  orders: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 14.2 9 H21 l-5.4 4.1 2 6.4 L12 16.2 6.4 19.5 l2-6.4 L3 9 h6.8 Z"/></svg>',
+  metal: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 9 7 l3 5 3-7 6 13 Z"/><path d="M8 18 h8 M12 18 v3"/></svg>',
+  profiles: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.4"/><circle cx="16" cy="8" r="2.4"/><path d="M3.5 18.5 c.6-2.6 2.4-4 4.5-4 s3.9 1.4 4.5 4 M11.5 18.5 c.6-2.6 2.4-4 4.5-4 s3.9 1.4 4.5 4"/></svg>',
+  lang: '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6 h9 v8 H4 Z M11 10 h9 v8 h-9 Z"/></svg>'
+};
+
+const PROFILES = [
+  {
+    id: "abraham",
+    index: "01",
+    name: "Abraham Thorn",
+    body: [
+      "Abraham Thorn is the biological father of Bram Thorn. They abandoned their son and disowned him, because he was physically weak, unintelligent, and generally a disappointment.",
+      "Shortly after rising through the ranks at Sword Coast Metallurgy, and amassing great wealth and prestige, they felt guilty that they had no heir to share the fortune and the legacy with. After hearing that their son had become an adventurer, they secretly commissioned him through a back channel at the Lumberville Adventuring Guild.",
+      "Bram was sent to Catan. The order is to kill off all of the failed goblins and orcs that the worms drove insane, and to conquer Catan so that Sword Coast Metallurgy can prosper. If Bram succeeds, Abraham will welcome him back into the family and appoint him the rightful heir."
+    ]
+  },
+  {
+    id: "bram",
+    index: "02",
+    name: "Bram Thorn",
+    body: [
+      "Bram Thorn was born with cardiomegaly and a brain tumor. The conditions put great medical stress on them at birth and nearly killed them. It is unknown how they survived and recovered, let alone how they became a powerful fighter.",
+      "Because they were abandoned and disowned as a child, they were never given medical treatment. The conditions remain, ticking time bombs that could strike at any moment and kill them.",
+      "The healing ritual that would cure these genetic diseases is expensive and complicated. If they are not welcomed back into the family, they will likely not be able to afford it. If they fail in the quest to conquer Catan, they will almost certainly die."
+    ]
+  },
+  {
+    id: "flaek",
+    index: "03",
+    name: "Flækingur Shadowcloak",
+    body: [
+      "Flækingur Shadowcloak is living a triple life, using changeling abilities to pass as a businessman, a commoner, and a criminal.",
+      "In one identity they are co-owner of Sword Coast Metallurgy. In another they are a normal parent to a secret changeling child. In the third they run a criminal enterprise that captures and enslaves orcs and goblins, and puts them to work for the company."
+    ]
+  },
+  {
+    id: "vafur",
+    index: "04",
+    name: "Vafur Shadowcloak",
+    body: [
+      "Vafur Shadowcloak is intelligent and moral. Given full knowledge of the actual plan, they could not have been hired to conquer Catan.",
+      "They were hired through secret back channels and led to believe this was a normal mission with a good purpose. In fact they are helping to prop up an enormous business by perpetuating the capture, enslavement, and murder of goblins and orcs."
+    ]
+  }
+];
+
+const state = {
+  lang: sessionStorage.getItem("ghuk-lang") || "goblin",
+  open: sessionStorage.getItem("ghuk-open") === "1",
+  screen: sessionStorage.getItem("ghuk-open") === "1" ? "menu" : "lock",
+  who: null,
+  error: ""
+};
+
+const view = document.getElementById("view");
+const holo = document.getElementById("holo");
+const statusEl = document.getElementById("status");
+const pipEl = document.getElementById("pip");
+
+function pass() {
+  const raw = "Fjbeq Pbnfg Zrgnyyhetl";
+  return raw.replace(/[a-zA-Z]/g, (c) => {
+    const base = c <= "Z" ? 65 : 97;
+    return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+  });
+}
+
+function esc(s) {
+  const amp = String.fromCharCode(38);
+  return s.replace(/[&<>"']/g, (c) => {
+    if (c === amp) return amp + "amp;";
+    if (c === "<") return amp + "lt;";
+    if (c === ">") return amp + "gt;";
+    if (c === '"') return amp + "quot;";
+    return amp + "#39;";
+  });
+}
+
+function keyOf(ch) {
+  const lower = ch.toLowerCase();
+  if (lower === "æ") return "æ";
+  if (RUNE[lower]) return lower;
+  return null;
+}
+
+function glyph(ch, kind) {
+  const key = keyOf(ch);
+  if (!key) return null;
+  const id = (kind === "stone" ? "s-" : "h-") + (key === "æ" ? "ae" : key);
+  return '<svg class="rune ' + kind + '" viewBox="0 0 40 48" aria-hidden="true"><use href="#' + id + '"></use></svg>';
+}
+
+function inlineText(str) {
+  if (state.lang === "common") return esc(str);
+  let out = "";
+  for (const ch of str) {
+    if (ch === " ") { out += '<span class="gap"></span>'; continue; }
+    const g = glyph(ch, "holo");
+    if (g) { out += g; continue; }
+    out += '<span class="mark">' + esc(ch) + "</span>";
+  }
+  return out;
+}
+
+function buildDefs() {
+  const bits = [];
+  for (const [key, d] of Object.entries(RUNE)) {
+    const id = key === "æ" ? "ae" : key;
+    const attrs = 'fill="none" stroke-linecap="square" stroke-linejoin="miter"';
+    bits.push(
+      '<symbol id="h-' + id + '" viewBox="0 0 40 48">' +
+        '<path d="' + d + '" ' + attrs + ' stroke="#7adfff" stroke-width="4" opacity="0.35"/>' +
+        '<path d="' + d + '" ' + attrs + ' stroke="#f4fdff" stroke-width="2.2"/>' +
+      "</symbol>"
+    );
+    bits.push(
+      '<symbol id="s-' + id + '" viewBox="0 0 40 48">' +
+        '<path d="' + d + '" ' + attrs + ' stroke="#1a140f" stroke-width="5.2"/>' +
+        '<path d="' + d + '" ' + attrs + ' stroke="#b3a48c" stroke-width="1.7"/>' +
+      "</symbol>"
+    );
+  }
+  document.getElementById("defs").innerHTML = bits.join("");
+}
+
+function buildTablet() {
+  const mark = document.getElementById("wordmark");
+  mark.innerHTML = "GHUKLIAK".split("").map((ch) => glyph(ch, "stone")).join("");
+  document.getElementById("alpha").innerHTML = LETTERS.map((letter) => {
+    return '<div class="cell">' + glyph(letter, "stone") + '<span class="lat">' + esc(letter) + "</span></div>";
+  }).join("");
+}
+
+function flash() {
+  holo.classList.remove("spike");
+  void holo.offsetWidth;
+  holo.classList.add("spike");
+}
+
+function setScreen(name) {
+  state.screen = name;
+  state.error = "";
+  flash();
+  render();
+}
+
+function render() {
+  const goblin = state.lang === "goblin";
+  statusEl.textContent = state.screen === "lock" ? "Awaiting word" : "Relay open";
+  pipEl.textContent = goblin ? "Ghukliak" : "Common";
+  view.classList.toggle("center", state.screen === "lock");
+  const parts = {
+    lock: renderLock,
+    menu: renderMenu,
+    orders: renderOrders,
+    metal: renderMetal,
+    profiles: renderProfiles,
+    profile: renderProfile,
+    languages: renderLanguages
+  };
+  view.innerHTML = (parts[state.screen] || renderMenu)();
+  view.scrollTop = 0;
+}
+
+function renderLock() {
+  return (
+    '<form class="gate" id="gate" autocomplete="off">' +
+      '<label class="ask" for="pw">Enter password</label>' +
+      '<input id="pw" name="pw" type="text" autocapitalize="words" autocorrect="off" spellcheck="false" autocomplete="off" enterkeyhint="go" aria-label="Password">' +
+      '<p class="err" id="err" role="alert">' + esc(state.error) + "</p>" +
+      '<button class="holo-btn" type="submit"><span class="label">Unseal</span></button>' +
+    "</form>"
+  );
+}
+
+function item(go, icon, label, extra) {
+  return (
+    '<button type="button" class="holo-btn" data-go="' + go + '" aria-label="' + esc(label) + '">' +
+      icon +
+      (extra || "") +
+      '<span class="label">' + inlineText(label) + "</span>" +
+    "</button>"
+  );
+}
+
+function renderMenu() {
+  return (
+    '<p class="kicker">' + inlineText("Records") + "</p>" +
+    "<h2>" + inlineText("Cube of Ghukliak") + "</h2>" +
+    '<div class="stack">' +
+      item("orders", ICO.orders, "Orders from The Star Spawn") +
+      item("metal", ICO.metal, "Metal Deposit") +
+      item("profiles", ICO.profiles, "Profiles") +
+      item("languages", ICO.lang, "Languages") +
+    "</div>" +
+    '<button type="button" class="ghost" data-go="seal" aria-label="Seal the cube"><span class="label">' + inlineText("Seal the cube") + "</span></button>"
+  );
+}
+
+function back(go, label) {
+  return '<button type="button" class="ghost back" data-go="' + go + '" aria-label="' + esc(label) + '">← <span class="label">' + inlineText(label) + "</span></button>";
+}
+
+function paras(list) {
+  return '<div class="prose">' + list.map((p) => "<p>" + inlineText(p) + "</p>").join("") + "</div>";
+}
+
+function renderOrders() {
+  const metals = ["Steel", "Gold", "Platinum", "Adamantine", "Mithral"];
+  return (
+    back("menu", "Return") +
+    "<h2>" + inlineText("Orders from The Star Spawn") + "</h2>" +
+    paras([
+      "A Star Spawn Larva Mage crash-landed on the Material Plane in the Kingdom of Cormyr, after being attacked by mind flayers. They need metal to rebuild their ship."
+    ]) +
+    '<p class="kicker">' + inlineText("Metal required") + "</p>" +
+    "<ul class=\"ore\">" + metals.map((m) => "<li>" + inlineText(m) + "</li>").join("") + "</ul>" +
+    paras([
+      "Samples of star spawn larvae have been intentionally seeded into Catan. The larvae make the local goblin and orc inhabitants less intelligent and more obedient. Should they resist the Star Spawn's orders, the worms drive them completely insane."
+    ])
+  );
+}
+
+function renderMetal() {
+  return (
+    back("menu", "Return") +
+    "<h2>" + inlineText("Metal Deposit") + "</h2>" +
+    paras([
+      "The rocky and mountainous areas of Catan are rich in metals.",
+      "Enslaved orcs and goblins are meant to work themselves to death mining for ore, and to deliver it to the southwest stone port for pickup."
+    ])
+  );
+}
+
+function renderProfiles() {
+  const buttons = PROFILES.map((p) =>
+    '<button type="button" class="holo-btn" data-go="who:' + p.id + '" aria-label="' + esc(p.name) + '">' +
+      '<span class="idx">' + p.index + "</span>" +
+      '<span class="label">' + inlineText(p.name) + "</span>" +
+    "</button>"
+  ).join("");
+  return back("menu", "Return") + "<h2>" + inlineText("Profiles") + "</h2>" + '<div class="stack">' + buttons + "</div>";
+}
+
+function renderProfile() {
+  const p = PROFILES.find((x) => x.id === state.who) || PROFILES[0];
+  return (
+    back("profiles", "All profiles") +
+    '<p class="kicker">' + p.index + "</p>" +
+    "<h2>" + inlineText(p.name) + "</h2>" +
+    paras(p.body)
+  );
+}
+
+function renderLanguages() {
+  const gOn = state.lang === "goblin" ? " on" : "";
+  const cOn = state.lang === "common" ? " on" : "";
+  return (
+    back("menu", "Return") +
+    "<h2>" + inlineText("Languages") + "</h2>" +
+    paras([
+      "Ghukliak is the goblin tongue. In that setting the records are written in the stone script cut into the tablet. Each rune has its Common letter beneath it.",
+      "Common is the English setting. It shows every record in words that can be read outright."
+    ]) +
+    '<div class="stack">' +
+      '<button type="button" class="holo-btn' + gOn + '" data-lang="goblin" aria-label="Ghukliak">' + ICO.lang + '<span class="label">' + inlineText("Ghukliak") + "</span></button>" +
+      '<button type="button" class="holo-btn' + cOn + '" data-lang="common" aria-label="Common">'+ ICO.lang + '<span class="label">' + inlineText("Common") + "</span></button>" +
+    "</div>"
+  );
+}
+
+function tryPassword(value) {
+  const got = String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
+  if (got === pass().toLowerCase()) {
+    state.open = true;
+    sessionStorage.setItem("ghuk-open", "1");
+    setScreen("menu");
+    return;
+  }
+  state.error = got ? "The cube does not open." : "Speak the word.";
+  render();
+  const input = document.getElementById("pw");
+  if (input) {
+    input.classList.add("shake");
+    input.focus();
+  }
+}
+
+view.addEventListener("submit", (e) => {
+  if (e.target.id !== "gate") return;
+  e.preventDefault();
+  tryPassword(new FormData(e.target).get("pw"));
+});
+
+view.addEventListener("click", (e) => {
+  const langBtn = e.target.closest("[data-lang]");
+  if (langBtn) {
+    state.lang = langBtn.dataset.lang;
+    sessionStorage.setItem("ghuk-lang", state.lang);
+    flash();
+    render();
+    return;
+  }
+  const btn = e.target.closest("[data-go]");
+  if (!btn) return;
+  const go = btn.dataset.go;
+  if (go === "seal") {
+    state.open = false;
+    state.who = null;
+    sessionStorage.removeItem("ghuk-open");
+    setScreen("lock");
+    return;
+  }
+  if (go.startsWith("who:")) {
+    state.who = go.slice(4);
+    setScreen("profile");
+    return;
+  }
+  setScreen(go);
+});
+
+buildDefs();
+buildTablet();
+render();
+</script>
+</body>
+</html>
