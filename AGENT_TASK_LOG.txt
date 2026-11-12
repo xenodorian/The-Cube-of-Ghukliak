@@ -171,6 +171,16 @@ Prompt: Update The Dreaming Dark. Same history, plus a mysterious gunslinger kno
 - Rewrote the last paragraph of The Dreaming Dark. The member list was already the names only, so it was left as is.
 - Pushed straight to `main`.
 
+### 2026-11-12 02:09 CST — Task received
+
+Prompt: Update The Sons of Strahd. They were hired by Flækingur to capture, infect, ship, and dispose of goblins and orcs, then betrayed him to remake Catan as New Barovia and resurrect Strahd. They are bad for business and must be eliminated. Members unchanged. Ignore image links.
+
+### 2026-11-12 02:10 CST — Task completed
+
+- Replaced the Sons of Strahd body with the hire, the betrayal, and the elimination order. Whiskey, Grog, Rum, Brandy, and Scotch were already listed and were left as names only.
+- Pushed straight to `main`.
+
+
 
 
 
