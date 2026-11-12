@@ -71,3 +71,23 @@ Prompt: Build The Cube of Ghukliak as an HTML file and publish it to GitHub Page
 - Pages will not update if `pages.yml` is removed while `build_type` stays `workflow`. Confirm the Actions run is green after a push. The public URL is https://xenodorian.github.io/The-Cube-of-Ghukliak/
 - `sessionStorage` keeps the cube unsealed and remembers the language for the browser session. "Seal the cube" locks it again.
 
+### 2026-11-12 01:16 CST — Task received
+
+Prompt: All text must be exclusively Ghukliak, with no English hints anywhere. The password is entered in Ghukliak by typing on a keyboard. The English keypress lights the matching Ghukliak letter on the tablet, and that same rune is what appears in the hologram.
+
+### 2026-11-12 01:20 CST — Task completed
+
+- Removed every visible Latin letter: tablet legend, status line, password field, errors, language names, profile numbers, and the Common-tongue reading mode.
+- The hologram, menus, and records render only as stone-script runes. Punctuation and the profile numbers are marks, not English characters.
+- On the lock screen, a letter key lights that rune on the tablet for a short beat and appends the rune to the hologram. Space and backspace edit the rune line. Enter or the rune button tries the seal.
+- Pushed straight to `main`. Pages workflow republishes `index.html`.
+
+### Difficulties / notes for other agents
+
+- Do not put Common letters back under the runes. That legend was the English hint this task removed. Players learn the map by pressing keys and watching the stone light up.
+- Do not render `state.lang === "common"` again unless the user explicitly asks for an English reading mode. As of this task the cube never shows English, including inside Languages.
+- The password compare is still the rot13 constant in `pass()`. The characters the player types are kept only in the `buffer` variable. The hologram never writes those characters into the DOM as text.
+- A hidden capture field exists so a phone keyboard can open. It is invisible and cleared on input. Key handling lives on `window` `keydown` so a desktop keyboard works even when that field is focused.
+- `innerText` of a correct page is empty. Check rune `<use href="#h-…">` nodes and `.cell.lit`, not rendered English.
+
+

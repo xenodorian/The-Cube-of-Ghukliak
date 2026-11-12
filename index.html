@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="und">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#07090c">
-<title>The Cube of Ghukliak</title>
+<title>◈</title>
 <style>
   :root {
     --ink: #e9fbff;
@@ -309,19 +309,67 @@
     gap: 4px 2px;
   }
   .cell {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1px;
+    justify-content: center;
     min-width: 0;
+    min-height: 40px;
   }
-  .lat {
-    font-family: Palatino, "Palatino Linotype", "Iowan Old Style", Georgia, serif;
-    font-size: 10px;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    color: #241e18;
-    text-shadow: 0 1px 0 rgba(255, 244, 220, 0.35);
+  .cell .rune.holo {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30px;
+    height: 36px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 4px #e9fdff) drop-shadow(0 0 10px #3ecfff);
+  }
+  .cell.lit {
+    background: rgba(110, 210, 255, 0.22);
+    box-shadow: 0 0 14px rgba(80, 200, 255, 0.55);
+  }
+  .cell.lit .rune.holo { display: block; }
+  .cell.lit .rune.stone { opacity: 0.15; }
+  .pw-wrap {
+    position: relative;
+    min-height: 56px;
+    border-bottom: 1px solid rgba(180, 240, 255, 0.75);
+    padding: 10px 2px 8px;
+  }
+  .pwline { min-height: 1.4em; line-height: 1.8; }
+  .capture {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    color: transparent;
+    background: transparent;
+    caret-color: transparent;
+  }
+  .caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: -0.12em;
+    background: #e7fbff;
+    box-shadow: 0 0 8px #7eefff;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .deny .holo-glass { animation: deny 0.5s linear; }
+  @keyframes deny {
+    25% { border-color: #ff9d96; box-shadow: inset 0 0 36px rgba(255, 70, 60, 0.4); }
+    100% { border-color: rgba(198, 244, 255, 0.7); }
   }
   .crack, .moss { position: absolute; pointer-events: none; }
   .crack { background: rgba(10, 8, 6, 0.55); }
@@ -345,7 +393,7 @@
   }
   @media (max-height: 740px) {
     .stage { min-height: 740px; }
-    .rune.stone { width: 22px; height: 26px; }
+    .rune.stone, .cell .rune.holo { width: 22px; height: 26px; }
   }
   @media (min-width: 800px) {
     .stage { padding-top: 28px; padding-bottom: 28px; min-height: 100dvh; }
@@ -358,13 +406,12 @@
 </style>
 </head>
 <body>
-<h1 class="visually-hidden">The Cube of Ghukliak</h1>
 <div class="stage">
   <div class="holo-wrap">
     <div class="holo" id="holo">
       <div class="holo-glass">
         <header class="chrome">
-          <span id="status">Awaiting word</span>
+          <span id="status"></span>
           <span id="pip"></span>
         </header>
         <div id="view"></div>
@@ -374,7 +421,7 @@
     </div>
   </div>
   <div class="beam" aria-hidden="true"></div>
-  <section class="tablet" aria-label="Goblin alphabet">
+  <section class="tablet">
     <div class="grain" aria-hidden="true"></div>
     <div class="crystal" aria-hidden="true"></div>
     <div class="wordmark" id="wordmark" aria-hidden="true"></div>
@@ -387,7 +434,6 @@
   </section>
 </div>
 <svg id="defs" width="0" height="0" style="position:absolute" aria-hidden="true"></svg>
-<noscript><p style="color:#dff6ff;padding:16px">The cube's light needs a browser that can run its working.</p></noscript>
 <script>
 const RUNE = {
   a: "M8,40 L20,10 L20,40 M20,10 L33,26",
@@ -470,12 +516,12 @@ const PROFILES = [
 ];
 
 const state = {
-  lang: sessionStorage.getItem("ghuk-lang") || "goblin",
   open: sessionStorage.getItem("ghuk-open") === "1",
   screen: sessionStorage.getItem("ghuk-open") === "1" ? "menu" : "lock",
-  who: null,
-  error: ""
+  who: null
 };
+
+let buffer = "";
 
 const view = document.getElementById("view");
 const holo = document.getElementById("holo");
@@ -487,17 +533,6 @@ function pass() {
   return raw.replace(/[a-zA-Z]/g, (c) => {
     const base = c <= "Z" ? 65 : 97;
     return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
-  });
-}
-
-function esc(s) {
-  const amp = String.fromCharCode(38);
-  return s.replace(/[&<>"']/g, (c) => {
-    if (c === amp) return amp + "amp;";
-    if (c === "<") return amp + "lt;";
-    if (c === ">") return amp + "gt;";
-    if (c === '"') return amp + "quot;";
-    return amp + "#39;";
   });
 }
 
@@ -515,14 +550,32 @@ function glyph(ch, kind) {
   return '<svg class="rune ' + kind + '" viewBox="0 0 40 48" aria-hidden="true"><use href="#' + id + '"></use></svg>';
 }
 
+const DIGIT = {
+  "0": "M12,12 H28 V36 H12 Z",
+  "1": "M20,10 V38 M12,38 H28 M14,16 L20,10",
+  "2": "M10,14 H30 L12,26 H30 L10,38 H30",
+  "3": "M10,12 H30 V22 H16 M12,22 H30 V38 H10",
+  "4": "M28,10 V38 M10,10 V22 H30"
+};
+
+function digitSvg(ch) {
+  const d = DIGIT[ch];
+  if (!d) return "";
+  return '<svg class="rune holo" viewBox="0 0 40 48" aria-hidden="true"><path d="' + d + '" fill="none" stroke="#f4fdff" stroke-width="2.2" stroke-linecap="square"/></svg>';
+}
+
+function dotSvg() {
+  return '<svg class="rune holo" viewBox="0 0 40 48" aria-hidden="true"><path d="M17 22 H23 V28 H17 Z" fill="#d7f6ff"/></svg>';
+}
+
 function inlineText(str) {
-  if (state.lang === "common") return esc(str);
   let out = "";
   for (const ch of str) {
     if (ch === " ") { out += '<span class="gap"></span>'; continue; }
     const g = glyph(ch, "holo");
     if (g) { out += g; continue; }
-    out += '<span class="mark">' + esc(ch) + "</span>";
+    if (DIGIT[ch]) { out += digitSvg(ch); continue; }
+    out += dotSvg();
   }
   return out;
 }
@@ -552,7 +605,8 @@ function buildTablet() {
   const mark = document.getElementById("wordmark");
   mark.innerHTML = "GHUKLIAK".split("").map((ch) => glyph(ch, "stone")).join("");
   document.getElementById("alpha").innerHTML = LETTERS.map((letter) => {
-    return '<div class="cell">' + glyph(letter, "stone") + '<span class="lat">' + esc(letter) + "</span></div>";
+    const k = letter.toLowerCase();
+    return '<div class="cell" data-k="' + k + '">' + glyph(letter, "stone") + glyph(letter, "holo") + "</div>";
   }).join("");
 }
 
@@ -564,15 +618,13 @@ function flash() {
 
 function setScreen(name) {
   state.screen = name;
-  state.error = "";
   flash();
   render();
 }
 
 function render() {
-  const goblin = state.lang === "goblin";
-  statusEl.textContent = state.screen === "lock" ? "Awaiting word" : "Relay open";
-  pipEl.textContent = goblin ? "Ghukliak" : "Common";
+  statusEl.innerHTML = inlineText("Ghukliak");
+  pipEl.innerHTML = "";
   view.classList.toggle("center", state.screen === "lock");
   const parts = {
     lock: renderLock,
@@ -585,22 +637,46 @@ function render() {
   };
   view.innerHTML = (parts[state.screen] || renderMenu)();
   view.scrollTop = 0;
+  if (state.screen === "lock") {
+    paintPw();
+    const input = document.getElementById("pw");
+    if (input) input.focus();
+  }
 }
 
 function renderLock() {
   return (
     '<form class="gate" id="gate" autocomplete="off">' +
-      '<label class="ask" for="pw">Enter password</label>' +
-      '<input id="pw" name="pw" type="text" autocapitalize="words" autocorrect="off" spellcheck="false" autocomplete="off" enterkeyhint="go" aria-label="Password">' +
-      '<p class="err" id="err" role="alert">' + esc(state.error) + "</p>" +
-      '<button class="holo-btn" type="submit"><span class="label">Unseal</span></button>' +
+      '<div class="ask">' + inlineText("Enter password") + "</div>" +
+      '<div class="pw-wrap">' +
+        '<div class="pwline" id="pwline"></div>' +
+        '<input id="pw" class="capture" name="entry" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">' +
+      "</div>" +
+      '<button class="holo-btn" type="submit"><span class="label">' + inlineText("Unseal") + "</span></button>" +
     "</form>"
   );
 }
 
+function paintPw() {
+  const line = document.getElementById("pwline");
+  if (!line) return;
+  line.innerHTML = inlineText(buffer) + '<i class="caret"></i>';
+}
+
+function lightKey(ch) {
+  document.querySelectorAll(".cell.lit").forEach((el) => el.classList.remove("lit"));
+  const key = keyOf(ch);
+  if (!key) return;
+  const cell = document.querySelector('.cell[data-k="' + key + '"]');
+  if (!cell) return;
+  cell.classList.add("lit");
+  clearTimeout(lightKey.timer);
+  lightKey.timer = setTimeout(() => cell.classList.remove("lit"), 450);
+}
+
 function item(go, icon, label, extra) {
   return (
-    '<button type="button" class="holo-btn" data-go="' + go + '" aria-label="' + esc(label) + '">' +
+    '<button type="button" class="holo-btn" data-go="' + go + '">' +
       icon +
       (extra || "") +
       '<span class="label">' + inlineText(label) + "</span>" +
@@ -618,12 +694,12 @@ function renderMenu() {
       item("profiles", ICO.profiles, "Profiles") +
       item("languages", ICO.lang, "Languages") +
     "</div>" +
-    '<button type="button" class="ghost" data-go="seal" aria-label="Seal the cube"><span class="label">' + inlineText("Seal the cube") + "</span></button>"
+    '<button type="button" class="ghost" data-go="seal"><span class="label">' + inlineText("Seal the cube") + "</span></button>"
   );
 }
 
 function back(go, label) {
-  return '<button type="button" class="ghost back" data-go="' + go + '" aria-label="' + esc(label) + '">← <span class="label">' + inlineText(label) + "</span></button>";
+  return '<button type="button" class="ghost back" data-go="' + go + '"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5 L7 12 L14 19"/></svg><span class="label">' + inlineText(label) + "</span></button>";
 }
 
 function paras(list) {
@@ -659,8 +735,8 @@ function renderMetal() {
 
 function renderProfiles() {
   const buttons = PROFILES.map((p) =>
-    '<button type="button" class="holo-btn" data-go="who:' + p.id + '" aria-label="' + esc(p.name) + '">' +
-      '<span class="idx">' + p.index + "</span>" +
+    '<button type="button" class="holo-btn" data-go="who:' + p.id + '">' +
+      '<span class="idx">' + inlineText(p.index) + "</span>" +
       '<span class="label">' + inlineText(p.name) + "</span>" +
     "</button>"
   ).join("");
@@ -671,26 +747,20 @@ function renderProfile() {
   const p = PROFILES.find((x) => x.id === state.who) || PROFILES[0];
   return (
     back("profiles", "All profiles") +
-    '<p class="kicker">' + p.index + "</p>" +
+    '<p class="kicker">' + inlineText(p.index) + "</p>" +
     "<h2>" + inlineText(p.name) + "</h2>" +
     paras(p.body)
   );
 }
 
 function renderLanguages() {
-  const gOn = state.lang === "goblin" ? " on" : "";
-  const cOn = state.lang === "common" ? " on" : "";
   return (
     back("menu", "Return") +
     "<h2>" + inlineText("Languages") + "</h2>" +
     paras([
-      "Ghukliak is the goblin tongue. In that setting the records are written in the stone script cut into the tablet. Each rune has its Common letter beneath it.",
-      "Common is the English setting. It shows every record in words that can be read outright."
-    ]) +
-    '<div class="stack">' +
-      '<button type="button" class="holo-btn' + gOn + '" data-lang="goblin" aria-label="Ghukliak">' + ICO.lang + '<span class="label">' + inlineText("Ghukliak") + "</span></button>" +
-      '<button type="button" class="holo-btn' + cOn + '" data-lang="common" aria-label="Common">'+ ICO.lang + '<span class="label">' + inlineText("Common") + "</span></button>" +
-    "</div>"
+      "The cube speaks Ghukliak and nothing else. No common letter is cut into the stone.",
+      "A key struck on another tongue lights the matching rune on the tablet. That same rune is set into the light above."
+    ])
   );
 }
 
@@ -698,40 +768,79 @@ function tryPassword(value) {
   const got = String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
   if (got === pass().toLowerCase()) {
     state.open = true;
+    buffer = "";
     sessionStorage.setItem("ghuk-open", "1");
     setScreen("menu");
     return;
   }
-  state.error = got ? "The cube does not open." : "Speak the word.";
-  render();
-  const input = document.getElementById("pw");
-  if (input) {
-    input.classList.add("shake");
-    input.focus();
+  holo.classList.remove("deny");
+  void holo.offsetWidth;
+  holo.classList.add("deny");
+  const line = document.getElementById("pwline");
+  if (line) {
+    line.classList.remove("shake");
+    void line.offsetWidth;
+    line.classList.add("shake");
   }
 }
+
+function takeKey(e) {
+  if (state.screen !== "lock") return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === "Enter") {
+    e.preventDefault();
+    tryPassword(buffer);
+    return;
+  }
+  if (e.key === "Backspace" || e.key === "Delete") {
+    e.preventDefault();
+    buffer = buffer.slice(0, -1);
+    paintPw();
+    return;
+  }
+  if (e.key === " ") {
+    e.preventDefault();
+    buffer += " ";
+    paintPw();
+    return;
+  }
+  if (/^[a-zA-Z]$/.test(e.key)) {
+    e.preventDefault();
+    buffer += e.key.toLowerCase();
+    lightKey(e.key);
+    paintPw();
+  }
+}
+
+window.addEventListener("keydown", takeKey);
 
 view.addEventListener("submit", (e) => {
   if (e.target.id !== "gate") return;
   e.preventDefault();
-  tryPassword(new FormData(e.target).get("pw"));
+  tryPassword(buffer);
+});
+
+view.addEventListener("input", (e) => {
+  if (e.target.id !== "pw") return;
+  const extra = e.target.value;
+  e.target.value = "";
+  if (!extra) return;
+  for (const ch of extra) {
+    if (ch === " " || /^[a-zA-Z]$/.test(ch)) buffer += ch.toLowerCase();
+  }
+  const last = extra.replace(/[^a-zA-Z]/g, "").slice(-1);
+  if (last) lightKey(last);
+  paintPw();
 });
 
 view.addEventListener("click", (e) => {
-  const langBtn = e.target.closest("[data-lang]");
-  if (langBtn) {
-    state.lang = langBtn.dataset.lang;
-    sessionStorage.setItem("ghuk-lang", state.lang);
-    flash();
-    render();
-    return;
-  }
   const btn = e.target.closest("[data-go]");
   if (!btn) return;
   const go = btn.dataset.go;
   if (go === "seal") {
     state.open = false;
     state.who = null;
+    buffer = "";
     sessionStorage.removeItem("ghuk-open");
     setScreen("lock");
     return;
